@@ -7,6 +7,13 @@ class Character {
         this.handling = handling;
         this.power = power;
         this.score = 0;
+class Character {
+    constructor(name, speed, handling, power) {
+        this.name = name;
+        this.speed = speed;
+        this.handling = handling;
+        this.power = power;
+        this.score = 0;
     }
 }
 
@@ -16,7 +23,15 @@ let yoshi = new Character("Yoshi", 2, 4, 3);
 let bowser = new Character("Bowser", 5, 2, 5);
 let luigi = new Character("Luigi", 3, 4, 4);
 let dk = new Character("Donkey Kong", 2, 2, 5);
+let mario = new Character("Mario", 4, 3, 3);
+let peach = new Character("Peach", 3, 4, 2);
+let yoshi = new Character("Yoshi", 2, 4, 3);
+let bowser = new Character("Bowser", 5, 2, 5);
+let luigi = new Character("Luigi", 3, 4, 4);
+let dk = new Character("Donkey Kong", 2, 2, 5);
 
+function chooseCharacter(chosenChar) {
+    switch (chosenChar.toLowerCase()) {
 function chooseCharacter(chosenChar) {
     switch (chosenChar.toLowerCase()) {
         case 'mario': return mario;
@@ -25,15 +40,19 @@ function chooseCharacter(chosenChar) {
         case 'bowser': return bowser;
         case 'luigi': return luigi;
         case 'donkey kong':
+        case 'donkey kong':
         case 'dk': return dk;
         default: return null;
     }
 }
 
+
 const readline = require('readline').createInterface({
     input: process.stdin,
     output: process.stdout
 });
+
+function questionAsync(prompt) { // Function to use readline with Promises
 
 function questionAsync(prompt) { // Function to use readline with Promises
     return new Promise((resolve) => {
@@ -44,10 +63,18 @@ function questionAsync(prompt) { // Function to use readline with Promises
 async function askPlayer1() { // Function to ask Player 1 and validate choice
     let chosenPlayer1 = await questionAsync('Choose a character for Player 1: Mario, Peach, Yoshi, Bowser, Luigi or Donkey Kong? ');
     let player1 = chooseCharacter(chosenPlayer1);
+
+async function askPlayer1() { // Function to ask Player 1 and validate choice
+    let chosenPlayer1 = await questionAsync('Choose a character for Player 1: Mario, Peach, Yoshi, Bowser, Luigi or Donkey Kong? ');
+    let player1 = chooseCharacter(chosenPlayer1);
     if (player1 === null) {
         console.log("Invalid character. Please choose a valid character.");
         return askPlayer1();  // Recursion to repeat
+        console.log("Invalid character. Please choose a valid character.");
+        return askPlayer1();  // Recursion to repeat
     }
+    console.log(`Player 1: ${player1.name}`);
+    return player1;  // Returns the character for later use
     console.log(`Player 1: ${player1.name}`);
     return player1;  // Returns the character for later use
 }
@@ -55,10 +82,16 @@ async function askPlayer1() { // Function to ask Player 1 and validate choice
 async function askPlayer2() { // Function to ask Player 2 and validate choice
     let chosenPlayer2 = await questionAsync('Choose a character for Player 2: Mario, Peach, Yoshi, Bowser, Luigi or Donkey Kong? ');
     let player2 = chooseCharacter(chosenPlayer2);
+
+async function askPlayer2() { // Function to ask Player 2 and validate choice
+    let chosenPlayer2 = await questionAsync('Choose a character for Player 2: Mario, Peach, Yoshi, Bowser, Luigi or Donkey Kong? ');
+    let player2 = chooseCharacter(chosenPlayer2);
     if (player2 === null) {
+        console.log("Invalid character. Please choose a valid character.");
         console.log("Invalid character. Please choose a valid character.");
         return askPlayer2();
     }
+    console.log(`Player 2: ${player2.name}`);
     console.log(`Player 2: ${player2.name}`);
     return player2;
 }
@@ -79,6 +112,11 @@ function skillCheck(character, trackType) { // Function to calculate skill check
 
 function getRandomTrack() { // Function to get a random track type
     let type = Math.random();
+    let result;
+    switch (true) {
+        case type < 0.33: result = "Straight"; break;
+        case type < 0.66: result = "Curve"; break;
+        default: result = "Confrontation"; break;
     let result;
     switch (true) {
         case type < 0.33: result = "Straight"; break;
@@ -133,6 +171,19 @@ async function startRace(player1, player2) {
 }
 
 (async function main() {
+    console.log("🏁 Welcome to the Mario Kart racing game! 🏁");
+    console.log("🚨 Each player must choose a character to compete. 🚨\n");
+    let player1 = await askPlayer1();
+    let player2 = await askPlayer2();
+    let result = await startRace(player1, player2);
+    if (result[0] > result[1]) {
+        console.log(`\n🎉 Player 1 (${player1.name}) is the big winner! Congratulations! 🎉`);
+    } else if (result[1] > result[0]) {
+        console.log(`\n🎉 Player 2 (${player2.name}) is the big winner! Congratulations! 🎉`);
+    } else {
+        console.log("\n🤝 The race ended in a tie! Congratulations to both players! 🤝");
+    }
+
     console.log("🏁 Welcome to the Mario Kart racing game! 🏁");
     console.log("🚨 Each player must choose a character to compete. 🚨\n");
     let player1 = await askPlayer1();
