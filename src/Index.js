@@ -63,11 +63,11 @@ async function askPlayer2() { // Function to ask Player 2 and validate choice
     return player2;
 }
 
-async function rollD6Dice() {
+function rollD6Dice() {
     return Math.floor(Math.random() * 6) + 1;
 }
 
-async function skillCheck(character, trackType) { // Function to calculate skill check result based on track type
+function skillCheck(character, trackType) { // Function to calculate skill check result based on track type
     if (trackType === "Straight") {
         return character.speed;
     } else if (trackType === "Curve") {
@@ -77,7 +77,7 @@ async function skillCheck(character, trackType) { // Function to calculate skill
     } else return 0;
 }
 
-async function getRandomTrack() { // Function to get a random track type
+function getRandomTrack() { // Function to get a random track type
     let type = Math.random();
     let result;
     switch (true) {
@@ -92,23 +92,25 @@ async function startRace(player1, player2) {
     console.log("\n🚩 The race has started! 🚩");
     for (let round = 1; round <= 5; round++) {
         console.log(`\n🏎️ Round ${round} `);
-        let track = await getRandomTrack();
+        let track = getRandomTrack();
         console.log(`Track: ${track}`);
-        let rollPlayer1 = await rollD6Dice();
-        let rollPlayer2 = await rollD6Dice();
-        let skillCheckPlayer1 = await skillCheck(player1, track) + rollPlayer1;
-        let skillCheckPlayer2 = await skillCheck(player2, track) + rollPlayer2;
+        let rollPlayer1 = rollD6Dice();
+        let rollPlayer2 = rollD6Dice();
+        let skillCheckPlayer1 = skillCheck(player1, track) + rollPlayer1;
+        let skillCheckPlayer2 = skillCheck(player2, track) + rollPlayer2;
 
-        console.log(`Player 1 (${player1.name}) rolled ${rollPlayer1} + ${(await skillCheck(player1, track))} = ${skillCheckPlayer1} on the dice 🎲`);
-        console.log(`Player 2 (${player2.name}) rolled ${rollPlayer2} + ${(await skillCheck(player2, track))} = ${skillCheckPlayer2} on the dice 🎲\n`);
+        console.log(`Player 1 (${player1.name}) rolled ${rollPlayer1} + ${(skillCheck(player1, track))} = ${skillCheckPlayer1} on the dice 🎲`);
+        console.log(`Player 2 (${player2.name}) rolled ${rollPlayer2} + ${(skillCheck(player2, track))} = ${skillCheckPlayer2} on the dice 🎲\n`);
         // Depending on the track type, the skill check result is compared and the round or confrontation winner is determined. In case of a confrontation, the loser has their score penalized, but it cannot go negative.
         if (track === "Confrontation") {
             if (skillCheckPlayer1 > skillCheckPlayer2) {
                 console.log(`Player 1 (${player1.name}) won the confrontation! 🏆`);
                 if (player2.score > 0) player2.score--; // Penalizes the losing player in the confrontation, but does not allow the score to go negative
+                else console.log(`Player 2 (${player2.name}) has no points to lose!`);
             } else if (skillCheckPlayer2 > skillCheckPlayer1) {
                 console.log(`Player 2 (${player2.name}) won the confrontation! 🏆`);
                 if (player1.score > 0) player1.score--; // Penalizes the losing player in the confrontation, but does not allow the score to go negative
+                else console.log(`Player 1 (${player1.name}) has no points to lose!`);
             } else {
                 console.log("The confrontation ended in a tie!");
             }
